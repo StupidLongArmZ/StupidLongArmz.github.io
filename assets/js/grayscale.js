@@ -1,43 +1,42 @@
-(function() {
+(function($) {
   "use strict"; // Start of use strict
 
-  var mainNav = document.querySelector('#mainNav');
-
-  if (mainNav) {
-
-    var navbarCollapse = mainNav.querySelector('.navbar-collapse');
-    
-    if (navbarCollapse) {
-
-      var collapse = new bootstrap.Collapse(navbarCollapse, {
-        toggle: false
-      });
-      
-      var navbarItems = navbarCollapse.querySelectorAll('a');
-      
-      // Closes responsive menu when a scroll trigger link is clicked
-      for (var item of navbarItems) {
-        item.addEventListener('click', function (event) {
-          collapse.hide();
-        });
+  // Smooth scrolling using jQuery easing
+  $('a.js-scroll-trigger[href*="#"]:not([href="#"])').click(function() {
+    if (location.pathname.replace(/^\//, '') == this.pathname.replace(/^\//, '') && location.hostname == this.hostname) {
+      var target = $(this.hash);
+      target = target.length ? target : $('[name=' + this.hash.slice(1) + ']');
+      if (target.length) {
+        $('html, body').animate({
+          scrollTop: (target.offset().top - 48)
+        }, 1000, "easeInOutExpo");
+        return false;
       }
     }
+  });
 
-    // Collapse Navbar
-    var collapseNavbar = function() {
+  // Closes responsive menu when a scroll trigger link is clicked
+  $('.js-scroll-trigger').click(function() {
+    $('.navbar-collapse').collapse('hide');
+  });
 
-      var scrollTop = (window.pageYOffset !== undefined) ? window.pageYOffset : (document.documentElement || document.body.parentNode || document.body).scrollTop;
+  // Activate scrollspy to add active class to navbar items on scroll
+  $('body').scrollspy({
+    target: '#mainNav',
+    offset: 54
+  });
 
-      if (scrollTop > 100) {
-        mainNav.classList.add("navbar-shrink");
-      } else {
-        mainNav.classList.remove("navbar-shrink");
-      }
-    };
-    // Collapse now if page is not at top
-    collapseNavbar();
-    // Collapse the navbar when page is scrolled
-    document.addEventListener("scroll", collapseNavbar);
-  }
+  // Collapse Navbar
+  var navbarCollapse = function() {
+    if ($("#mainNav").offset().top > 100) {
+      $("#mainNav").addClass("navbar-shrink");
+    } else {
+      $("#mainNav").removeClass("navbar-shrink");
+    }
+  };
+  // Collapse now if page is not at top
+  navbarCollapse();
+  // Collapse the navbar when page is scrolled
+  $(window).scroll(navbarCollapse);
 
-})(); // End of use strict
+})(jQuery); // End of use strict
